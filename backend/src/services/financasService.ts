@@ -1,40 +1,83 @@
-import { FinancaSimplificada } from "../@types/FinancasType";
+import { DateFinanceType, FinancaSimplificada } from "../@types/FinancasType";
 import { HttpException } from "../errors/HttpException";
 import { prisma } from "../lib/prisma";
 
 class FinancasService {
-  name: string; 
-  date: number;
+  name: string;
+  date: string;
   value: number
   userId: string;
+  itemId: string | undefined;
 
-  constructor({ body, userId }: FinancaSimplificada) {
-   this.date = body.date
-   this.name = body.name
-   this.value = body.value
-   this.userId = userId
-  }
- 
-   async public create() {
-   if(!this.date || !this.name || !this.value) {
-    throw new HttpException(400, "Preencha todos os campos");
-   }
-
-   const financeRes = await prisma.financa.create({
-    date: 8  
-   })
+  constructor({ body, userId, itemId }: FinancaSimplificada) {
+    this.date = body.date
+    this.name = body.name
+    this.value = body.value
+    this.userId = userId
+    this.itemId = itemId
   }
 
-  async public read() {
-   
+  public async create(): Promise<{ message: string, financeRes: DateFinanceType }> {
+    if (!this.date || !this.name || !this.value) {
+      throw new HttpException(400, "Preencha todos os campos");
+    }
+
+    const financeRes = await prisma.financa.create({
+      date: this.date,
+      name: this.name,
+      value: this.value,
+      userId: this.userId
+    })
+
+    return {
+      financeRes,
+      message: "Sucesso!, conteudo criado"
+    }
   }
 
-  async public update() {
-   
+  public async read(): Promise<{ message: string, listFinances: DateFinanceType[] }> {
+    const listFinances = await prisma.financa.findMany();
+    return {
+      listFinances,
+      message: "Sucesso! itens listados"
+    }
   }
 
-  async public delete() {
-   
+  public async update(): Promise<{ message: string, newFinance: DateFinanceType }> {
+    if (!this.date || !this.name || !this.value || this.itemId) {
+      throw new HttpException(400, "Preencha todos os campos");
+    }
+
+    const newFinance = await prisma.financa.update({
+      where: {
+        id: this.itemId,
+      },
+      data: {
+        date: this.date,
+        name: this.name,
+        value: this.value,
+        userId: this.userId
+      }
+    })
+
+    return {
+      newFinance,
+      message: "Sucesso! item atualizado"
+    }
+  }
+
+  public async delete(): Promise<{ message: string }> {
+    if (!this.itemId) {
+      throw new HttpException(400, "É necessário declarar o id do item");
+    }
+
+    await prisma.financa.delete({
+      where: { id: this.itemId },
+    })
+
+    return {
+      message: "Sucesso! item deletado"
+    }
   }
 }
 

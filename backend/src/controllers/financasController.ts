@@ -20,7 +20,10 @@ export async function HandleFinancesCreate(
 
     const decoded = jwtDecode(token)
     const service = new FinancasService(req.body, decoded.id);
-    // const {} = service.create()
+    const { message } = await service.create();
+    return res
+      .status(201)
+      .json({ authMessage: "Usuário autenticado com sucesso", message });
   } catch (error) {
     if (error instanceof HttpException) {
       return res.status(error.statusCode).json({ message: error.message });
@@ -35,7 +38,10 @@ export async function HandleFinancesRead(
 ): Promise<Response | any> {
   try {
     const service = new FinancasService(req.body);
-
+    const { listFinances, message } = await service.read()
+    return res
+      .status(200)
+      .json({ listFinances, message })
   } catch (error) {
     if (error instanceof HttpException) {
       return res.status(error.statusCode).json({ message: error.message });
@@ -50,7 +56,10 @@ export async function HandleFinancesUpdate(
 ): Promise<Response | any> {
   try {
     const service = new FinancasService(req.body);
-
+    const { newFinance, message } = await service.update()
+    return res
+      .status(200)
+      .json({ newFinance, message })
   } catch (error) {
     if (error instanceof HttpException) {
       return res.status(error.statusCode).json({ message: error.message });
@@ -65,7 +74,7 @@ export async function HandleFinancesDelete(
 ): Promise<Response | any> {
   try {
     const service = new FinancasService(req.body);
-
+    const { } = await service.delete()
   } catch (error) {
     if (error instanceof HttpException) {
       return res.status(error.statusCode).json({ message: error.message });
