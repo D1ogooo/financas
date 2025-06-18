@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { jwtDecode } from 'jwt-decode';
 import type { Request, Response } from "express";
 import type { SignInType, SignUpType } from "../@types/AuthTypes";
 import { HttpException } from "../errors/HttpException";
@@ -17,8 +18,8 @@ export async function HandleFinancesCreate(
       return res.status(401).json({ message: "Token não fornecido" });
     }
 
-    const userId = jwt.verify(token, jwtConfig.secret as string)
-    const service = new FinancasService(req.body, userId);
+    const decoded = jwtDecode(token)
+    const service = new FinancasService(req.body, decoded.id);
     // const {} = service.create()
   } catch (error) {
     if (error instanceof HttpException) {
