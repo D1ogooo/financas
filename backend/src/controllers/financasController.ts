@@ -7,10 +7,18 @@ import { FinancasService } from "../services/financasService";
 import { jwtConfig } from "../configs/auth";
 
 export async function HandleFinancesCreate(
-  req: Request<SignInType>,
+  req: Request,
   res: Response,
 ): Promise<Response | any> {
   try {
+    // console.log("Body:", req.body);
+    // console.log("Headers:", req.headers);
+    // return res.json({
+    //   body: req.body,
+    //   headers: req.headers,
+    //   message: "Request recebida"
+    // });
+
     const authHeader = req.headers.authorization;
     const token = authHeader?.split(" ")[1];
 
@@ -23,16 +31,19 @@ export async function HandleFinancesCreate(
     if (!userId) {
       return res.status(401).json({ message: "ID do usuário não encontrado no token" });
     }
-    const service = new FinancasService(req.body);
-    const { message } = await service.create();
+
+    const service = new FinancasService(req.body, userId);
+    const { message, financeRes } = await service.create();
+
     return res
       .status(201)
-      .json({ authMessage: "Usuário autenticado com sucesso", message });
+      .json({ financeRes, message });
   } catch (error) {
     if (error instanceof HttpException) {
-      return res.status(error.statusCode).json({ message: error.message });
+      return res.status(error.statusCode).json({ message: error });
     }
-    return res.status(500).json({ message: "Erro interno no servidor" });
+    // return res.status(500).json({ message: "Erro interno no servidor" });
+    return res.status(500).json(error)
   }
 }
 
@@ -59,11 +70,11 @@ export async function HandleFinancesUpdate(
   res: Response,
 ): Promise<Response | any> {
   try {
-    const service = new FinancasService(req.body);
-    const { newFinance, message } = await service.update()
-    return res
-      .status(200)
-      .json({ newFinance, message })
+    // const service = new FinancasService(req.body);
+    // const { newFinance, message } = await service.update()
+    // return res
+    //   .status(200)
+    //   .json({ newFinance, message })
   } catch (error) {
     if (error instanceof HttpException) {
       return res.status(error.statusCode).json({ message: error.message });
@@ -77,8 +88,8 @@ export async function HandleFinancesDelete(
   res: Response,
 ): Promise<Response | any> {
   try {
-    const service = new FinancasService(req.body);
-    const { } = await service.delete()
+    // const service = new FinancasService(req.body);
+    // const { } = await service.delete()
   } catch (error) {
     if (error instanceof HttpException) {
       return res.status(error.statusCode).json({ message: error.message });

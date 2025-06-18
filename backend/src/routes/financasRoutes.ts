@@ -1,5 +1,4 @@
 import express from "express";
-import { AuthMiddleware } from "../middlewares/authMiddleware";
 import {
   HandleFinancesCreate, HandleFinancesRead,
   HandleFinancesUpdate, HandleFinancesDelete,
@@ -20,13 +19,11 @@ finanscasRoutes.post(
 finanscasRoutes.post(
   "/update",
   HandleFinancesUpdate,
-  AuthMiddleware
 );
 
 finanscasRoutes.post(
   "/delete",
   HandleFinancesDelete,
-  AuthMiddleware
 );
 
 export { finanscasRoutes }

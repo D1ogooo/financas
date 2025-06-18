@@ -1,15 +1,16 @@
 import { DateFinanceType, FinancaSimplificada } from "../@types/FinancasType";
 import { HttpException } from "../errors/HttpException";
 import { prisma } from "../lib/prisma";
-
+import { Request } from 'express'
 class FinancasService {
   name: string;
   date: string;
   value: number
   userId: string;
-  itemId: string | undefined;
-
-  constructor({ body, userId, itemId }: FinancaSimplificada) {
+  itemId?: string | undefined;
+// FinancaSimplificada
+  constructor(body:any, userId: string, itemId?: string) {
+    console.log(body, userId, itemId)
     this.date = body.date
     this.name = body.name
     this.value = body.value
@@ -18,18 +19,22 @@ class FinancasService {
   }
 
   public async create(): Promise<{ message: string, financeRes: DateFinanceType }> {
-    if (!this.date || !this.name || !this.value) {
+    console.log(this.date, this.name, this.value, this.userId)
+
+    if (!this.date || !this.name || !this.value || !this.userId) {
       throw new HttpException(400, "Preencha todos os campos");
     }
 
     const financeRes = await prisma.financa.create({
       data: {
-        date: this.date,
+        date: new Date().toISOString(),
         name: this.name,
         value: this.value,
         userId: this.userId
       }
     })
+
+    console.log(financeRes)
 
     return {
       financeRes: {

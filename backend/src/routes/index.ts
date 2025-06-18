@@ -4,11 +4,12 @@ const router = express.Router();
 
 import { authRoutes } from "./AuthRoutes";
 import { finanscasRoutes } from "./financasRoutes";
+import { AuthMiddleware } from "../middlewares/authMiddleware";
 
 // Routes - Auth
 router.use("/auth", authRoutes)
 
 // Routes - Valores
-finanscasRoutes.use('/financas', finanscasRoutes)
+router.use('/financas', AuthMiddleware, finanscasRoutes)
 
 export { router };

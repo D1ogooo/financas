@@ -38,19 +38,3 @@ export async function HandleSignUpUser(
     return res.status(500).json({ message: "Erro interno no servidor" });
   }
 }
-
-export async function HandleSignOutUser(
-  req: Request,
-  res: Response,
-): Promise<Response | any> {
-  try {
-    const service = new AuthService(req.body);
-    await service.signout();
-    return res.status(200).json({ message: "Usuário deslogado com sucesso" });
-  } catch (error) {
-    if (error instanceof HttpException) {
-      return res.status(error.statusCode).json({ message: error.message });
-    }
-    return res.status(500).json({ message: "Erro interno no servidor" });
-  }
-}

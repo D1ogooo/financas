@@ -83,8 +83,6 @@ class AuthService {
     return user;
   }
 
-  public async signout() { }
-
 }
 
 export { AuthService };
