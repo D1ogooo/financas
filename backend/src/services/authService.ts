@@ -22,10 +22,10 @@ class AuthService {
     if (!this.email || !this.password) {
       throw new HttpException(400, "Preencha todos os campos");
     }
-
-    const userEmail = await prisma.user.findUnique({
-      where: { id: this.email },
-    });
+  
+    const userEmail = await prisma.user.findFirst({
+      where: { email: this.email },
+    })
 
     if (!userEmail) {
       throw new HttpException(400, "Email inválido");

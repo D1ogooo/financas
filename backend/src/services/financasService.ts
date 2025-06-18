@@ -23,22 +23,31 @@ class FinancasService {
     }
 
     const financeRes = await prisma.financa.create({
-      date: this.date,
-      name: this.name,
-      value: this.value,
-      userId: this.userId
+      data: {
+        date: this.date,
+        name: this.name,
+        value: this.value,
+        userId: this.userId
+      }
     })
 
     return {
-      financeRes,
+      financeRes: {
+        ...financeRes,
+        date: financeRes.date instanceof Date ? financeRes.date.toISOString() : financeRes.date
+      },
       message: "Sucesso!, conteudo criado"
     }
   }
 
   public async read(): Promise<{ message: string, listFinances: DateFinanceType[] }> {
     const listFinances = await prisma.financa.findMany();
+    const formattedFinances: DateFinanceType[] = listFinances.map(finance => ({
+      ...finance,
+      date: finance.date instanceof Date ? finance.date.toISOString() : finance.date
+    }));
     return {
-      listFinances,
+      listFinances: formattedFinances,
       message: "Sucesso! itens listados"
     }
   }
@@ -61,7 +70,10 @@ class FinancasService {
     })
 
     return {
-      newFinance,
+      newFinance: {
+        ...newFinance,
+        date: newFinance.date instanceof Date ? newFinance.date.toISOString() : newFinance.date
+      },
       message: "Sucesso! item atualizado"
     }
   }

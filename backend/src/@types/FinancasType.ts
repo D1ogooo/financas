@@ -6,6 +6,7 @@ export interface FinancaSimplificada {
   },
   userId: string;
   itemId?: string | undefined;
+  message: string;
 }
 
 export interface DateFinanceType {
@@ -13,5 +14,4 @@ export interface DateFinanceType {
   name: string,
   value: number,
   userId: string,
-  message: string
 }

@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { jwtDecode } from 'jwt-decode';
 import type { Request, Response } from "express";
 import type { SignInType, SignUpType } from "../@types/AuthTypes";
@@ -18,8 +18,12 @@ export async function HandleFinancesCreate(
       return res.status(401).json({ message: "Token não fornecido" });
     }
 
-    const decoded = jwtDecode(token)
-    const service = new FinancasService(req.body, decoded.id);
+    const decoded = jwtDecode<{ id?: string }>(token);
+    const userId = decoded.id;
+    if (!userId) {
+      return res.status(401).json({ message: "ID do usuário não encontrado no token" });
+    }
+    const service = new FinancasService(req.body);
     const { message } = await service.create();
     return res
       .status(201)
