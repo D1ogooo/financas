@@ -1,18 +1,25 @@
+import jwt from "jsonwebtoken";
 import type { Request, Response } from "express";
 import type { SignInType, SignUpType } from "../@types/AuthTypes";
 import { HttpException } from "../errors/HttpException";
-import { AuthService } from "../services/authService";
+import { FinancasService } from "../services/financasService";
+import { jwtConfig } from "../configs/auth";
 
 export async function HandleFinancesCreate(
   req: Request<SignInType>,
   res: Response,
 ): Promise<Response | any> {
   try {
-    const service = new AuthService(req.body);
-    const { user, token } = await service.signin();
-    return res
-      .status(200)
-      .json({ message: "Usuário autenticado com sucesso", user, token });
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "Token não fornecido" });
+    }
+
+    const userId = jwt.verify(token, jwtConfig.secret as string)
+    const service = new FinancasService(req.body, userId);
+    // const {} = service.create()
   } catch (error) {
     if (error instanceof HttpException) {
       return res.status(error.statusCode).json({ message: error.message });
@@ -26,11 +33,8 @@ export async function HandleFinancesRead(
   res: Response,
 ): Promise<Response | any> {
   try {
-    const service = new AuthService(req.body);
-    const user = await service.signup();
-    return res
-      .status(201)
-      .json({ user, message: "Usuário criado com sucesso" });
+    const service = new FinancasService(req.body);
+
   } catch (error) {
     if (error instanceof HttpException) {
       return res.status(error.statusCode).json({ message: error.message });
@@ -44,9 +48,8 @@ export async function HandleFinancesUpdate(
   res: Response,
 ): Promise<Response | any> {
   try {
-    const service = new AuthService(req.body);
-    await service.signout();
-    return res.status(200).json({ message: "Usuário deslogado com sucesso" });
+    const service = new FinancasService(req.body);
+
   } catch (error) {
     if (error instanceof HttpException) {
       return res.status(error.statusCode).json({ message: error.message });
@@ -60,9 +63,8 @@ export async function HandleFinancesDelete(
   res: Response,
 ): Promise<Response | any> {
   try {
-    const service = new AuthService(req.body);
-    await service.signout();
-    return res.status(200).json({ message: "Usuário deslogado com sucesso" });
+    const service = new FinancasService(req.body);
+
   } catch (error) {
     if (error instanceof HttpException) {
       return res.status(error.statusCode).json({ message: error.message });

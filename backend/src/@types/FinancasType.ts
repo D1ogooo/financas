@@ -1,5 +1,8 @@
 export interface FinancaSimplificada {
-  name: string;
-  date: number;
-  value: number;
+  body: {
+    name: string;
+    date: number;
+    value: number;
+  },
+  userId: string;
 }

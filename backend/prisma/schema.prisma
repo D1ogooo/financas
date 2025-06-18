@@ -27,8 +27,8 @@ model Financa {
   id     String   @id @default(uuid())
   userId String
   name   String
-  value  Float
   date   DateTime
+  value  Float
 
   user User @relation(fields: [userId], references: [id])
 }
