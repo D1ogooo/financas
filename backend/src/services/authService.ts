@@ -47,7 +47,7 @@ class AuthService {
     );
 
     const user = await prisma.user.findUnique({
-      where: { id: this.email },
+      where: { id: userEmail.id },
       select: {
         id: true,
         name: true,
@@ -62,9 +62,9 @@ class AuthService {
       throw new HttpException(400, "Preencha todos os campos");
     }
 
-    const userEmail = await prisma.user.findUnique({
-      where: { id: this.email },
-    });
+     const userEmail = await prisma.user.findFirst({
+      where: { email: this.email },
+    })
 
     if (userEmail) {
       throw new HttpException(400, "Email já cadastrado");

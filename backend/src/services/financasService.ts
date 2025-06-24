@@ -6,10 +6,10 @@ class FinancasService {
   name: string;
   date: string;
   value: number
-  userId: string;
+  private userId?: string;
   itemId?: string | undefined;
 // FinancaSimplificada
-  constructor(body:any, userId: string, itemId?: string) {
+  constructor(body:any, userId?: string, itemId?: string) {
     console.log(body, userId, itemId)
     this.date = body.date
     this.name = body.name

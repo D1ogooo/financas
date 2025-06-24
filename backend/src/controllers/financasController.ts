@@ -11,14 +11,6 @@ export async function HandleFinancesCreate(
   res: Response,
 ): Promise<Response | any> {
   try {
-    // console.log("Body:", req.body);
-    // console.log("Headers:", req.headers);
-    // return res.json({
-    //   body: req.body,
-    //   headers: req.headers,
-    //   message: "Request recebida"
-    // });
-
     const authHeader = req.headers.authorization;
     const token = authHeader?.split(" ")[1];
 

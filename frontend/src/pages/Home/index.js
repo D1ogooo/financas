@@ -3,6 +3,12 @@ import Header from "../../components/Header";
 import Balance from "../../components/Balance";
 import Movements from "../../components/Movements";
 import Actions from "../../components/Actions";
+import { api } from "../../services/api";
+import { useEffect } from "react";
+
+// useEffect(() => {
+//  api.get('/')
+// }, [])
 
 const lista = [
   {
